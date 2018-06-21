@@ -100,9 +100,10 @@ class PeopleClient:
         print(count)
 
         for name in mynames:
-            # response = requests.get(self.base_url, json= name, headers= headers) - metoda przechodzi response.stauts_code = 200
-            response = requests.delete(self.base_url, json=name, headers=headers)  # response.status_code = 404
-            print(response)
+            url = self.base_url + str(name['id'])
+            response = requests.delete(url, headers=headers)
+            print(name['id'])
+
             if response.status_code == 404:
                 raise PeopleClientError('User with given name not found')
             elif not response.ok:
@@ -117,11 +118,11 @@ class PeopleClient:
 
         for person in persons:
             response = requests.post(self.base_url, json=person, headers=headers)
-        return response.json
 
         if response.status_code != 201:
                 raise PeopleClientError(response.json()['error'])
         return response.json()
+
 
 
 if __name__ == '__main__':
@@ -129,17 +130,20 @@ if __name__ == '__main__':
     client = PeopleClient('http://polakow.eu:3000/people/', token)
     people = client.get_all()
     people2 = client.get_all(200)
-    people5 = client.query(first_name='Tatiana')
-    people7 = client.delete_by_id('22')
-    people9 = client.delete_by_name('John')
-    people10 = client.add_from_file('data.json')
-    print(people)
-    print(people == people2)
-    people3 = client.add_person('Marek', 'Drama', 'jondram@agmail.com', '+48505789456', '192.168.1.1')
-    print(people3)
-    people4 = client.person_by_id('22')
-    print(people4)
 
+    #people7 = client.delete_by_id('22')
+    people9 = client.delete_by_name('Marek')
+
+    people5 = client.query(first_name='Marek')
     print(people5)
+    #print(people)
+    #people10 = client.add_from_file('data.json')
+    #print(people)
+    #print(people == people2)
+    people3 = client.add_person('Marek', 'Drama', 'jondram@agmail.com', '+48505789456', '192.168.1.1')
+    #print(people3)
+    #people4 = client.person_by_id('22')
+    #print(people4)
+
     people6 = client.people_by_partial_ip('192.168')
-    print(people6)
+    #print(people6)
